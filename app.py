@@ -10,7 +10,7 @@ load_dotenv()
 # ── Page config ──────────────────────────────────────────────
 st.set_page_config(
     page_title="AuxoAI Case Study Discovery Agent",
-    page_icon="assets/favicon.png" if os.path.exists("assets/favicon.png") else "🤖",
+    page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -174,39 +174,42 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ── Session state for example buttons ────────────────────────
+if "prospect_text" not in st.session_state:
+    st.session_state.prospect_text = ""
+
+examples = {
+    "Healthcare SDR":        "We are a healthcare SaaS company selling EHR software. Our win rates are dropping and reps waste time on low-intent accounts. We need smarter lead prioritization.",
+    "B2B Logistics":         "We are a B2B logistics company. Our two SDRs can only reach so many prospects weekly. We need to scale pipeline without adding headcount.",
+    "Food Mfg Data":         "We are a food manufacturer. Data is spread across 5 systems and analysts spend all day pulling manual reports. We need a single source of truth.",
+    "Telecom Training":      "We run a telecom retention center. New agents take 6 weeks to ramp and save rates are inconsistent. We need faster training.",
+    "Law Firm (escalation)": "We are a law firm looking to automate contract review and reduce due diligence time."
+}
+
 col_left, col_right = st.columns([3, 2], gap="large")
 
 with col_left:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<p class="card-label">Prospect Problem Description</p>', unsafe_allow_html=True)
+    st.markdown('<p class="example-label">Try an example:</p>', unsafe_allow_html=True)
+
+    btn_cols = st.columns(3)
+    for i, (label, text) in enumerate(examples.items()):
+        with btn_cols[i % 3]:
+            if st.button(label, key=f"ex_{i}", use_container_width=True):
+                st.session_state.prospect_text = text
+                st.rerun()
+
     prospect_input = st.text_area(
         label="",
+        value=st.session_state.prospect_text,
         placeholder="e.g. We are a mid-size pharma company. Our SDR team is overwhelmed and we are missing high-value leads because we have no way to score or prioritize our pipeline.",
         height=160,
         label_visibility="collapsed"
     )
 
-    examples = [
-        "We are a healthcare SaaS company selling EHR software. Our win rates are dropping and reps waste time on low-intent accounts. We need smarter lead prioritization.",
-        "We are a B2B logistics company. Our two SDRs can only reach so many prospects weekly. We need to scale pipeline without adding headcount.",
-        "We are a food manufacturer. Data is spread across 5 systems and analysts spend all day pulling manual reports. We need a single source of truth.",
-        "We run a telecom retention center. New agents take 6 weeks to ramp and save rates are inconsistent. We need faster training.",
-        "We are a law firm looking to automate contract review and reduce due diligence time."
-    ]
-
-    st.markdown('<p class="example-label">Try an example:</p>', unsafe_allow_html=True)
-    cols = st.columns(3)
-    example_labels = ["Healthcare SDR", "B2B Logistics", "Food Mfg Data", "Telecom Training", "Law Firm (escalation)"]
-    for i, (label, example) in enumerate(zip(example_labels, examples)):
-        with cols[i % 3]:
-            if st.button(label, key=f"ex_{i}", use_container_width=True):
-                prospect_input = example
-
     run = st.button("Run Agent", type="primary", use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 with col_right:
-    st.markdown('<div class="card sidebar-card">', unsafe_allow_html=True)
     st.markdown('<p class="card-label">How It Works</p>', unsafe_allow_html=True)
     st.markdown("""
 <div class="how-it-works">
@@ -216,8 +219,8 @@ with col_right:
     <div class="step"><span class="step-num">4</span><span>Groq generates a tailored pitch, or escalates to human</span></div>
 </div>
 """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
+# ── Results ──────────────────────────────────────────────────
 if run and prospect_input.strip():
     with st.spinner("Retrieving best match and generating pitch..."):
         matches = retrieve_top_match(prospect_input)
@@ -240,6 +243,7 @@ if run and prospect_input.strip():
     <p class="escalate-attempt">Closest attempted match: <strong>{cs['title']}</strong> ({cs['industry']})</p>
 </div>
 """, unsafe_allow_html=True)
+
         else:
             pitch = generate_pitch(prospect_input, top)
 
@@ -256,7 +260,6 @@ if run and prospect_input.strip():
             with r1:
                 st.markdown('<p class="card-label">Generated Pitch</p>', unsafe_allow_html=True)
                 st.markdown(f'<div class="pitch-box">{pitch}</div>', unsafe_allow_html=True)
-
             with r2:
                 st.markdown('<p class="card-label">Matched Case Study</p>', unsafe_allow_html=True)
                 st.markdown(f"""
@@ -273,6 +276,7 @@ if run and prospect_input.strip():
 elif run and not prospect_input.strip():
     st.warning("Please describe the prospect's problem before running the agent.")
 
+# ── Footer ───────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
     Built by <a href="https://linkedin.com/in/aabhishek-singh/" target="_blank">Abhishek Singh</a> &nbsp;|&nbsp;
