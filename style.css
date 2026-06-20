@@ -165,12 +165,14 @@ button[kind="primary"]:hover { opacity: 0.9 !important; }
 }
 .score-display {
   font-size: 0.85rem;
-  color: var(--auxo-muted);
+  font-weight: 700;
+  color: #E8EDF5;
   font-family: 'JetBrains Mono', monospace;
-  background: var(--auxo-subtle);
-  padding: 0.25rem 0.75rem;
+  background: rgba(79, 142, 247, 0.12);
+  padding: 0.3rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid var(--auxo-border);
+  border: 1px solid rgba(79, 142, 247, 0.4);
+  letter-spacing: 0.05em;
 }
 
 /* ── Badges ─────────────────────────────────────────── */
