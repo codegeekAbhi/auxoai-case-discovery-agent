@@ -16,6 +16,8 @@ A sales rep or forward deployed expert walks into a prospect conversation. The p
 
 Low-confidence matches are flagged for human escalation rather than generating a hallucinated pitch. The agent knows what it does not know.
 
+live link : https://auxoai-case-discovery-agent.streamlit.app/
+
 ---
 
 ## Forward Deployment Brief
