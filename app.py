@@ -169,12 +169,12 @@ def confidence_label(score: float) -> tuple:
 st.markdown("""
 <div class="hero">
     <div class="hero-eyebrow">AuxoAI Internal Tool</div>
-    <h1 class="hero-title">Case Study Discovery Agent</h1>
+    <h1 class="hero-title">Case Study <span>Discovery Agent</span></h1>
     <p class="hero-sub">Describe a prospect's problem. Get the right case study and a tailored pitch in seconds.</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ── Session state for example buttons ────────────────────────
+# ── Session state ────────────────────────────────────────────
 if "prospect_text" not in st.session_state:
     st.session_state.prospect_text = ""
 
@@ -186,6 +186,7 @@ examples = {
     "Law Firm (escalation)": "We are a law firm looking to automate contract review and reduce due diligence time."
 }
 
+# ── Main columns ─────────────────────────────────────────────
 col_left, col_right = st.columns([3, 2], gap="large")
 
 with col_left:
@@ -248,11 +249,9 @@ if run and prospect_input.strip():
             pitch = generate_pitch(prospect_input, top)
 
             st.markdown(f"""
-<div class="result-card">
-    <div class="result-header">
-        <span class="badge {css_class}">{label} CONFIDENCE</span>
-        <span class="score-display">Score: {score}</span>
-    </div>
+<div class="result-header">
+    <span class="badge {css_class}">{label} CONFIDENCE</span>
+    <span class="score-display">Score: {score}</span>
 </div>
 """, unsafe_allow_html=True)
 
