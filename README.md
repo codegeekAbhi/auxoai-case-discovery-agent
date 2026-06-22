@@ -8,7 +8,7 @@
 
 ---
 
-## What This Is
+## What is this 
 
 A forward deployment simulation tool built specifically for AuxoAI's go-to-market workflow.
 
